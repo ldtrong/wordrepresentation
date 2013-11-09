@@ -37,7 +37,7 @@ public class WordDistance extends App {
 	}
 
 	public static void main(String[] args) throws IOException {
-		String word = "liên_quan";
+		String word = "tình_yêu";
 		int top = 40;
 		WordDistance wd = new WordDistance("models/corpus_new.txt.seg.jbin", top);
 		wd.loadJW2VModel();
