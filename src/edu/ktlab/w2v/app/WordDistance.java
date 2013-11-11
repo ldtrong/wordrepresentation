@@ -7,9 +7,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import edu.ktlab.w2v.distance.Distance;
+import edu.ktlab.w2v.distance.DotProductDistance;
+
 public class WordDistance extends App {
-	public WordDistance(String path, int topNSize) {
-		super(path, topNSize);
+	public WordDistance(String path, int topNSize, Distance measure) {
+		super(path, topNSize, measure);
 	}
 
 	public Set<WordEntry> distance(String word) {
@@ -28,10 +31,8 @@ public class WordDistance extends App {
 			}
 			float dist = 0;
 			tempVector = entry.getValue();
-			for (int i = 0; i < wordVector.length; i++) {
-				dist += wordVector[i] * tempVector[i];
-			}
-			insertTopN(name, dist, wordEntrys, topNSize);
+			dist = measure.distance(wordVector, tempVector);
+			insertTopN(name, dist, tempVector, wordEntrys, topNSize);
 		}
 		return new TreeSet<WordEntry>(wordEntrys);
 	}
@@ -39,7 +40,8 @@ public class WordDistance extends App {
 	public static void main(String[] args) throws IOException {
 		String word = "tình_yêu";
 		int top = 40;
-		WordDistance wd = new WordDistance("models/corpus_new.txt.seg.jbin", top);
+		WordDistance wd = new WordDistance("models/viwordreprs-v1.0.jbin", top,
+				new DotProductDistance());
 		wd.loadJW2VModel();
 		System.out.println(wd.distance(word));
 	}

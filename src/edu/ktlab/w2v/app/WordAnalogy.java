@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
+import edu.ktlab.w2v.distance.Distance;
+import edu.ktlab.w2v.distance.DotProductDistance;
+
 public class WordAnalogy extends App {
-	public WordAnalogy(String path, int topNSize) {
-		super(path, topNSize);
+	public WordAnalogy(String path, int topNSize, Distance measure) {
+		super(path, topNSize, measure);
 	}
 
 	public TreeSet<WordEntry> analogy(String word0, String word1, String word2) {
@@ -33,16 +36,15 @@ public class WordAnalogy extends App {
 			}
 			float dist = 0;
 			tempVector = entry.getValue();
-			for (int i = 0; i < wordVector.length; i++) {
-				dist += wordVector[i] * tempVector[i];
-			}
-			insertTopN(name, dist, wordEntrys, topNSize);
+			dist = measure.distance(wordVector, tempVector);
+			insertTopN(name, dist, tempVector, wordEntrys, topNSize);
 		}
 		return new TreeSet<WordEntry>(wordEntrys);
 	}
 
 	public static void main(String[] args) throws IOException {
-		WordAnalogy wa = new WordAnalogy("models/corpus_new.txt.seg.jbin", 10);
+		WordAnalogy wa = new WordAnalogy("models/viwordreprs-v1.0.jbin", 10,
+				new DotProductDistance());
 		wa.loadJW2VModel();
 		System.out.println(wa.analogy("hà_nội", "hà_đông", "ba_đình"));
 	}

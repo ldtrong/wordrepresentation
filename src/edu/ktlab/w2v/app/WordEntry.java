@@ -2,11 +2,18 @@ package edu.ktlab.w2v.app;
 
 public class WordEntry implements Comparable<WordEntry> {
 	public String name;
+	public float[] vector;
 	public float score;
 
 	public WordEntry(String name, float score) {
 		this.name = name;
 		this.score = score;
+	}
+	
+	public WordEntry(String name, float score, float[] vector) {
+		this.name = name;
+		this.score = score;
+		this.vector = vector;
 	}
 
 	@Override
