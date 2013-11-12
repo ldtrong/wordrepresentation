@@ -3,7 +3,6 @@ package edu.ktlab.w2v.app;
 import java.io.IOException;
 import java.util.Set;
 
-import com.apporiented.algorithm.clustering.AverageLinkageStrategy;
 import com.apporiented.algorithm.clustering.Cluster;
 import com.apporiented.algorithm.clustering.ClusteringAlgorithm;
 import com.apporiented.algorithm.clustering.CompleteLinkageStrategy;
@@ -24,10 +23,11 @@ public class WordHACClustering extends App {
 		alg = new DefaultClusteringAlgorithm();
 	}
 
-	private void clustering(String word) {
+	public Cluster clustering(String word) {
 		double[][] DISTANCES = new double[topNSize][topNSize];
 		String[] NAMES = new String[topNSize];
 		Set<WordEntry> entries = wd.distance(word);
+		if( entries == null || entries.size() == 0) return null;
 		WordEntry[] instances = entries.toArray(new WordEntry[entries.size()]);
 		for (int i = 0; i < instances.length; i++) {
 			for (int j = 0; j < instances.length; j++) {
@@ -41,13 +41,15 @@ public class WordHACClustering extends App {
 			NAMES[i] = instances[i].name;
 
 		Cluster cluster = alg.performClustering(DISTANCES, NAMES, new CompleteLinkageStrategy());
-		cluster.toConsole(0);
-	}
 
+		return cluster;
+	}
+	
 	public static void main(String[] args) throws IOException {
-		String word = "tình_bạn";
+		String word = "hạnh_phúc";
 		int top = 100;
-		WordHACClustering wd = new WordHACClustering("models/viwordreprs-v1.0.jbin", top, new CosineDistance());
-		wd.clustering(word);
+		WordHACClustering wd = new WordHACClustering("models/viwordreprs-236k.jbin", top, new CosineDistance());
+		Cluster cluster = wd.clustering(word);
+		cluster.toConsole(0);
 	}
 }
